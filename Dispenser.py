@@ -48,15 +48,14 @@ class ControladorHorario:
 
 
 
-dispensador = Dispensador('Dispenser de Agua')
+dispensador = Dispenser('Dispenser de Agua')
 
 # Franja horaria de encendido: 6:00 AM a 6:00 PM
-controlador = ControladorHorario(dispensador, time(6, 0), time(18, 0))
+controlador = ControladorHorario(Dispenser, time(6, 0), time(18, 0))
 
 import time as tm
 
 for _ in range(3):
     controlador.controlar()
-    print(f'Estado del {dispensador.nombre}: {dispensador.leer_estado()}')
-    tm.sleep(2)  # Simulación de paso del tiempo en segundos
-
+    print(f'Estado del {Dispenser.nombre}: {Dispenser.leer_estado()}')
+    tm.sleep(2) 
