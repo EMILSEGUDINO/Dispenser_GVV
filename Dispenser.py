@@ -1,33 +1,62 @@
-import time
+from datetime import datetime, time
 
-# Variables
-dispenser_state = "off"
+class Dispositivo:
 
-# franja horaria de encendido (en formato HH:MM)
-start_time = "06:00"
-end_time = "18:00"
+    def __init__(self, nombre):
+        self.nombre = nombre
+        self.estado = False  # False = Apagado, True = Encendido
 
-def is_in_time_range():
+    def encender(self):
+        self.estado = True
+        print(f'{self.nombre} encendido.')
+
+    def apagar(self):
+        self.estado = False
+        print(f'{self.nombre} apagado.')
+
+    def leer_estado(self):
+        return 'Encendido' if self.estado else 'Apagado'
+
+
+class Dispenser(Dispositivo):
+  
+    def __init__(self, nombre):
+        super().__init__(nombre)
+
+    def dispensar(self):
+        if self.estado:
+            print(f'{self.nombre} está dispensando...')
+        else:
+            print(f'{self.nombre} está apagado.')
+
+
+class ControladorHorario:
     
-    current_time = datetime.datetime.now()
-    start_time_obj = datetime.datetime.strptime(start_time, "%H:%M")
-    end_time_obj = datetime.datetime.strptime(end_time, "%H:%M")
+    def __init__(self, dispositivo, hora_inicio, hora_fin):
+        self.dispositivo = dispositivo
+        self.hora_inicio = hora_inicio
+        self.hora_fin = hora_fin
 
-    if start_time_obj <= current_time <= end_time_obj:
-        return True
-    else:
-        return False
+    def controlar(self):
+        hora_actual = datetime.now().time()
+        if self.hora_inicio <= hora_actual <= self.hora_fin:
+            if not self.dispositivo.estado:
+                self.dispositivo.encender()
+        else:
+            if self.dispositivo.estado:
+                self.dispositivo.apagar()
 
-while True:
- 
-    if is_in_time_range():
-        if dispenser_state == "off":
-            print("Dispensador de agua encendido")
-            dispenser_state = "on"
-    else:
-        if dispenser_state == "on":
-            print("Dispensador de agua apagado")
-            dispenser_state = "off"
 
-    # Esperar 1 minuto
-    time.sleep(60)
+
+dispensador = Dispensador('Dispenser de Agua')
+
+# Franja horaria de encendido: 6:00 AM a 6:00 PM
+controlador = ControladorHorario(dispensador, time(6, 0), time(18, 0))
+
+import time as tm
+
+for _ in range(3):
+    controlador.controlar()
+    print(f'Estado del {dispensador.nombre}: {dispensador.leer_estado()}')
+    tm.sleep(2)  # Simulación de paso del tiempo en segundos
+
